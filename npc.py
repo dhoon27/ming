@@ -7,10 +7,10 @@ from button import *
 from message import *
 
 class Npc(pygame.sprite.Sprite):
-    def __init__(self, StageManger, x, y, idx):
-        self.stage_manager = StageManger
+    def __init__(self, stage, x, y, idx):
+        self.stage = stage
         self._layer = NPC_LAYER
-        self.groups = self.stage_manager.all_sprites, self.stage_manager.npcs
+        self.groups = self.stage.all_sprites, self.stage.npcs
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.isCleared = False
@@ -44,8 +44,8 @@ class Npc(pygame.sprite.Sprite):
             while messageCnt < messageRest:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        self.stage_manager.running = False
-                        self.stage_manager.playing = False
+                        self.stage.running = False
+                        self.stage.playing = False
                         return
 
                 speaker, message = NPC_MESSAGE_LIST[self.idx][messageCnt]
@@ -54,8 +54,7 @@ class Npc(pygame.sprite.Sprite):
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_pressed = pygame.mouse.get_pressed()
 
-                messagebox.draw(self.stage_manager.game_manager.screen)
-                self.stage_manager.game_manager.clock.tick(CLOCK_FPS)
+                messagebox.draw(self.stage.gameManager.screen)
                 pygame.display.update()
 
                 if messageCnt > 0 and messagebox.is_prev_pressed(mouse_pos, mouse_pressed):

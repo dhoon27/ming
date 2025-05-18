@@ -5,11 +5,11 @@ import random
 from config.config import *
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, StageManger, x, y):
+    def __init__(self, stage, x, y):
 
-        self.stage_manager = StageManger
+        self.stage = stage
         self._layer = ENEMY_LAYER
-        self.groups = self.stage_manager.all_sprites, self.stage_manager.enemies
+        self.groups = self.stage.all_sprites, self.stage.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILE_SIZE
@@ -25,28 +25,28 @@ class Enemy(pygame.sprite.Sprite):
         self.movement_loop =  0
         self.max_travel = random.randint(*ENEMY_MIN_MAX_TRAVEL)
 
-        self.image = self.stage_manager.enemy_spriteSheet.get_sprite(3, 2, self.width, self.height)
+        self.image = self.stage.stageManager.enemy_spriteSheet.get_sprite(3, 2, self.width, self.height)
         self.image.set_colorkey(COLOR_BLACK)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.down_animations = [self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_DOWN, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_DOWN_1, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_DOWN_2, self.width, self.height)]
+        self.down_animations = [self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_DOWN, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_DOWN_1, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_DOWN_2, self.width, self.height)]
 
-        self.up_animations = [self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_UP, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_UP_1, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_UP_2, self.width, self.height)]
+        self.up_animations = [self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_UP, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_UP_1, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_UP_2, self.width, self.height)]
 
-        self.left_animations = [self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_LEFT, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_LEFT_1, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_LEFT_2, self.width, self.height)]
+        self.left_animations = [self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_LEFT, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_LEFT_1, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_LEFT_2, self.width, self.height)]
 
-        self.right_animations = [self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_RIGHT, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_RIGHT_1, self.width, self.height),
-            self.stage_manager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_RIGHT_2, self.width, self.height)]
+        self.right_animations = [self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_RIGHT, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_RIGHT_1, self.width, self.height),
+            self.stage.stageManager.enemy_spriteSheet.get_sprite(*CHARACTER_ENEMY_RIGHT_2, self.width, self.height)]
 
     def update(self):
         self.movement()

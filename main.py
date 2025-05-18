@@ -2,9 +2,9 @@ import sys
 import pygame
 
 from config.config import *
-from image import *
 from button import *
-from stage import *
+from stageManager import *
+import time # todo: remove this later
 
 INTRO_TEXT_CENTER_X = WINDOW_WIDTH // 2 + TILE_SIZE // 2
 INTRO_TEXT_CENTER_Y = WINDOW_HEIGHT // 4
@@ -40,37 +40,22 @@ class GameManager:
         pygame.init()
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption("MING IN BYENGJUM")
-        self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont('malgungothic', FONT_SIZE)
+        self.clock = pygame.time.Clock()
 
         self.running = True
         self.IsIntro = True
         self.IsPlay = False
         self.IsOutro = False
 
-        self.stageIdx = 0
-        self.stageIsCleared = [
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-            False,
-        ]
-
-    def intro(self):
+    def show_intro(self):
+        intro_background = pygame.image.load(INTRO_IMAGE)
         intro_text = self.font.render('Ming in ByengJum', True, COLOR_BLACK)
         intro_text_rect = intro_text.get_rect(center=INTRO_TEXT_POS)
 
         play_button = Button(*INTRO_BUTTON_POS, *INTRO_BUTTON_SIZE, COLOR_WHITE, COLOR_BLACK, 'Play', FONT_SIZE)
-        intro_background = Image().intro_background
 
-        while self.IsIntro:
+        while self.IsIntro == True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.IsIntro = False
@@ -85,24 +70,25 @@ class GameManager:
             if play_button.is_pressed(mouse_pos, mouse_pressed):
                 self.IsIntro = False
                 self.IsPlay = True
-                self.IsOutro = True # Todo: remove this line
+                self.screen.fill((0, 0, 0))  # Fill the screen with black
+                pygame.display.update()  # Update the display
+                time.sleep(0.5)
                 return
 
             self.screen.blit(intro_background, (0,0))
             self.screen.blit(intro_text, intro_text_rect)
             self.screen.blit(play_button.image, play_button.rect)
-            self.clock.tick(CLOCK_FPS)
             pygame.display.update()
 
-    def outro(self):
+    def show_outro(self):
+        outro_background = pygame.image.load(OUTRO_IMAGE)
         outro_text = self.font.render('Game Over!', True, COLOR_WHITE)
         outro_text_rect = outro_text.get_rect(center=OUTRO_TEXT_POS)
 
         restart_button = Button(*RESTART_BUTTON_POS, *RESTART_BUTTON_SIZE, COLOR_WHITE, COLOR_BLACK, 'Restart', FONT_SIZE)
         quit_button = Button(*QUIT_BUTTON_POS, *QUIT_BUTTON_SIZE, COLOR_WHITE, COLOR_BLACK, 'Quit', FONT_SIZE)
-        outro_background = Image().outro_background
 
-        while self.IsOutro:
+        while self.IsOutro == True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -119,6 +105,9 @@ class GameManager:
                 self.IsIntro = True
                 self.IsPlay = False
                 self.IsOutro = False
+                self.screen.fill((0, 0, 0))  # Fill the screen with black
+                pygame.display.update()  # Update the display
+                time.sleep(0.5)
                 return
 
             if quit_button.is_pressed(mouse_pos, mouse_pressed):
@@ -126,27 +115,37 @@ class GameManager:
                 self.IsIntro = False
                 self.IsPlay = False
                 self.IsOutro = False
+                self.screen.fill((0, 0, 0))  # Fill the screen with black
+                pygame.display.update()  # Update the display
+                time.sleep(0.5)
                 return
 
             self.screen.blit(outro_background, (0, 0))
             self.screen.blit(outro_text, outro_text_rect)
             self.screen.blit(restart_button.image, restart_button.rect)
             self.screen.blit(quit_button.image, quit_button.rect)
-            self.clock.tick(CLOCK_FPS)
             pygame.display.update()
 
     def play(self):
-        while self.IsPlay:
-            print("main play")
-            Stage(self)
-
+        while self.IsPlay == True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    self.IsIntro = False
+                    self.IsPlay = False
+                    self.IsOutro = False
+                    return
+            stageManager = StageManager(self)
+            stageManager.play()
+            self.IsPlay = False
+            self.IsOutro = True
 
 if __name__ == "__main__":
     game_manager = GameManager()
     while game_manager.running:
-        game_manager.intro()
+        game_manager.show_intro()
         game_manager.play()
-        game_manager.outro()
+        game_manager.show_outro()
 
     pygame.quit()
     sys.exit()
